@@ -10,7 +10,7 @@ import PurchaseSuccessPage from "./pages/PurchaseSuccessPage";
 import SignUpPage from "./pages/SignUpPage";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar";
-import { useUserStore } from "./store/useUserStore";
+import { useUserStore } from "./stores/useUserStore";
 import { useEffect } from "react";
 import LoadingSpinner from "./components/LoadingSpinner";
 
@@ -43,7 +43,16 @@ export default function App() {
             path="/login"
             element={!user ? <LoginPage /> : <Navigate to="/" />}
           />
-          <Route path="/secret-dashboard" element={<AdminPage />} />
+          <Route
+            path="/secret-dashboard"
+            element={
+              user?.role === "admin" ? (
+                <AdminPage />
+              ) : (
+                <Navigate to={"/login"} />
+              )
+            }
+          />
           <Route path="/category/:category" element={<CategoryPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/purchase-success" element={<PurchaseSuccessPage />} />
