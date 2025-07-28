@@ -48,10 +48,10 @@ const SearchBar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [setShowDropdown]);
 
-  const handleProductClick = (productId) => {
+  const handleProductClick = (productCategory) => {
     setShowDropdown(false);
     clearSearch();
-    navigate(`/product/${productId}`);
+    navigate(`/category/${productCategory}`);
   };
 
   const handleInputFocus = () => {
@@ -103,7 +103,7 @@ const SearchBar = () => {
               {searchResults.map((product) => (
                 <button
                   key={product._id}
-                  onClick={() => handleProductClick(product._id)}
+                  onClick={() => handleProductClick(product.category)}
                   className="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors duration-200 flex items-center space-x-3"
                 >
                   {product.image && (
