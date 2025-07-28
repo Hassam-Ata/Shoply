@@ -7,6 +7,7 @@ import {
   getProductsByCategory,
   getRecommendedProducts,
   toggleFeaturedProduct,
+  searchProducts, // Add this import
 } from "../controllers/product.controller.js";
 import { adminRoute, protectRoute } from "../middleware/auth.middleware.js";
 
@@ -19,5 +20,8 @@ router.get("/recommendations", getRecommendedProducts);
 router.post("/", protectRoute, adminRoute, createProduct);
 router.patch("/:id", protectRoute, adminRoute, toggleFeaturedProduct);
 router.delete("/:id", protectRoute, adminRoute, deleteProduct);
+
+// Simple search route for dropdown suggestions
+router.get("/search", searchProducts);
 
 export default router;

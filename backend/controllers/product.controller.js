@@ -157,3 +157,39 @@ async function updateFeaturedProductsCache() {
     console.log("error in update cache function");
   }
 }
+
+// Add this function to your existing product controller
+
+export const searchProducts = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim() === "") {
+      return res.status(400).json({ message: "Search query is required" });
+    }
+
+    // Create search regex for case-insensitive partial matching
+    const searchRegex = new RegExp(q.trim(), "i");
+
+    // Search in name, description, and category fields
+    const products = await Product.find({
+      $or: [
+        { name: { $regex: searchRegex } },
+        { description: { $regex: searchRegex } },
+        { category: { $regex: searchRegex } },
+      ],
+    })
+      .limit(10) // Limit results for dropdown suggestions
+      .select("_id name description price image category") // Only select needed fields
+      .lean(); // Return plain JavaScript objects for better performance
+
+    res.json({
+      products,
+      count: products.length,
+      query: q,
+    });
+  } catch (error) {
+    console.log("Error in searchProducts controller", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

@@ -1,6 +1,7 @@
 import { ShoppingCart, UserPlus, LogIn, LogOut, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
+import SearchBar from "./SearchBar";
 
 const Navbar = () => {
   const { user, logout } = useUserStore();
@@ -16,6 +17,7 @@ const Navbar = () => {
           >
             E-Commerce
           </Link>
+          {user && <SearchBar />}
 
           <nav className="flex flex-wrap items-center gap-4">
             <Link
