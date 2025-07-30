@@ -14,7 +14,7 @@ const OrderSummary = () => {
   const formattedSavings = savings.toFixed(2);
 
   const handlePayment = async () => {
-    console.log("Handle Payment function called");
+    console.log("Some changes");
   };
 
   return (
