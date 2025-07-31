@@ -1,27 +1,36 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import AdminPage from "./pages/AdminPage";
-import CartPage from "./pages/CartPage";
-import CategoryPage from "./pages/CategoryPage";
 import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import PurchaseCancelPage from "./pages/PurchaseCancelPage";
-import PurchaseSuccessPage from "./pages/PurchaseSuccessPage";
 import SignUpPage from "./pages/SignUpPage";
-import { Toaster } from "react-hot-toast";
+import LoginPage from "./pages/LoginPage";
+import AdminPage from "./pages/AdminPage";
+import CategoryPage from "./pages/CategoryPage";
+
 import Navbar from "./components/Navbar";
+import { Toaster } from "react-hot-toast";
 import { useUserStore } from "./stores/useUserStore";
 import { useEffect } from "react";
 import LoadingSpinner from "./components/LoadingSpinner";
+import CartPage from "./pages/CartPage";
+import { useCartStore } from "./stores/useCartStore";
+import PurchaseSuccessPage from "./pages/PurchaseSuccessPage";
+import PurchaseCancelPage from "./pages/PurchaseCancelPage";
 
-export default function App() {
+function App() {
   const { user, checkAuth, checkingAuth } = useUserStore();
-
+  const { getCartItems } = useCartStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  if (checkingAuth) <LoadingSpinner />;
+  useEffect(() => {
+    if (!user) return;
+
+    getCartItems();
+  }, [getCartItems, user]);
+
+  if (checkingAuth) return <LoadingSpinner />;
+
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
       {/* Background gradient */}
@@ -46,20 +55,27 @@ export default function App() {
           <Route
             path="/secret-dashboard"
             element={
-              user?.role === "admin" ? (
-                <AdminPage />
-              ) : (
-                <Navigate to={"/login"} />
-              )
+              user?.role === "admin" ? <AdminPage /> : <Navigate to="/login" />
             }
           />
           <Route path="/category/:category" element={<CategoryPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/purchase-success" element={<PurchaseSuccessPage />} />
-          <Route path="/purchase-cancel" element={<PurchaseCancelPage />} />
+          <Route
+            path="/cart"
+            element={user ? <CartPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/purchase-success"
+            element={user ? <PurchaseSuccessPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/purchase-cancel"
+            element={user ? <PurchaseCancelPage /> : <Navigate to="/login" />}
+          />
         </Routes>
       </div>
       <Toaster />
     </div>
   );
 }
+
+export default App;
